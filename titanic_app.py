@@ -26,8 +26,10 @@ st.markdown(
 )
 
 # Load the dataset
-file_path = r"C:\Users\dawn\OneDrive - Cebu Institute of Technology University\4TH YEAR_1ST SEM\IE3_CSIT342\MIDTERM\AJA\titanic_dataset.csv"
+# Load the dataset from GitHub
+file_path = "https://raw.githubusercontent.com/dawnmarie-gumagay/MIDTERM_IE3/main/titanic_dataset.csv"
 titanic_dataset = pd.read_csv(file_path)
+
 
 
 # -------------------- INTRODUCTION SECTION --------------------
