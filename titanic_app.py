@@ -3,227 +3,206 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
-import base64
 
-# Set page configuration
 st.set_page_config(page_title="Titanic Data Exploration App", layout="wide")
-
-# CSS styling for the app
 st.markdown(
     """
     <style>
     .reportview-container {
         background-color: #E0F7FA;  
         color: #2F4F4F;  
-        font-family: 'Arial', sans-serif;
     }
-    .stButton>button {
+    .st-button {
         background-color: #001f3f;  
         color: #FFFFFF;
-        border-radius: 5px;
-        padding: 10px 20px;
-        transition: background-color 0.3s;
     }
-    .stButton>button:hover {
-        background-color: #003366;
+    .stButton>button {
+        color: #FFFFFF;
     }
-    .title {
-        text-align: center;
-        font-size: 2.5rem;
-        color: #001f3f;
+     /* Title box styling */
+     .title-box {
+        background-color: #002147;  /* Blue background */
+        color: white;                /* White text color */
+        padding: 20px;              /* Padding */
+        border-radius: 5px;         /* Rounded corners */
+        text-align: center;         /* Centered text */
+        font-size: 36px;            /* Increased font size */
+        font-family: 'Arial', sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Shadow effect */
+        transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
     }
-    .header {
-        color: #2E8B57;
+    .title-box:hover {
+        transform: scale(1.05);  /* Slight scaling on hover */
+        background-color: #003366;  /* Darker blue on hover */
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Shadow on text */
+    }
+    /* Group Information styling */
+    .group-info-box {
+        background-color: #E0F7FA;  /* Light blue background */
+        padding: 20px;              /* Padding for spacing */
+        border-radius: 10px;         /* Rounded corners */
+        border: 2px solid #008080;   /* Teal border */
+        font-family: 'Arial', sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Shadow for depth */
+        transition: transform 0.3s ease; /* Smooth transition */
+    }
+    .group-info-box:hover {
+        transform: scale(1.02);  /* Slight scale up on hover */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);  /* Larger shadow on hover */
+    }
+    .group-title {
+        font-size: 24px;
+        color: #002147;
         font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
     }
-    .subheader {
-        color: #4B0082;
-    }
-    .plot-container {
+    .group-leader, .group-member {
+        font-size: 18px;
+        color: #005555;
+        margin-bottom: 5px;
         display: flex;
-        justify-content: center;
-        margin: 20px 0;
+        align-items: center;
     }
+    .group-leader:before {
+        content: '👑';  /* Crown emoji for leader */
+        margin-right: 8px;
+    }
+    .group-member:before {
+        content: '👤';  /* Person icon for members */
+        margin-right: 8px;
+    }
+    .stSelectbox {
+        background-color: #002147 !important;
+        color: #2F4F4F !important;
+        border-radius: 5px !important;
+        padding: 10px !important;
+        label[data-testid="stWidgetLabel"] div {
+        color: white;  /* Set the text color to white */
+    }
+    
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Load the Titanic dataset
+
+
 file_path = "https://raw.githubusercontent.com/dawnmarie-gumagay/MIDTERM_IE3/main/titanic_dataset.csv"
 titanic_dataset = pd.read_csv(file_path)
 
-# App title
-st.markdown('<h1 class="title">Titanic Data Exploration App</h1>', unsafe_allow_html=True)
+st.markdown('<div class="title-box">Titanic Data Exploration App 🚢</div>', unsafe_allow_html=True)
 
-# Define pages for navigation
-pages = {
-    "Introduction": "intro",
-    "Data Visualization": "visualization",
-    "Conclusion": "conclusion"
-}
 
-# Create the sidebar for navigation
-selected_page = st.sidebar.radio("Select a page:", list(pages.keys()))
+st.header("Introduction")
+st.write("""
+This application explores the factors affecting survival rates on the Titanic. 
+The dataset used for this analysis is the Titanic dataset from Kaggle. 
+The purpose of this exploration is to uncover insights into the factors that influenced passengers' survival on the Titanic, 
+such as their class, gender, age, and fare paid.
+""")
 
-# Introduction Page
-if selected_page == "Introduction":
-    # Introduction Section
-    st.header("Introduction")
-    st.write(""" 
-    This application explores the factors affecting survival rates on the Titanic. 
-    The dataset used for this analysis is the Titanic dataset from Kaggle. 
-    The purpose of this exploration is to uncover insights into the factors that influenced passengers' survival on the Titanic, 
-    such as their class, gender, age, and fare paid.
-    """)
 
-    # Display basic dataset information
-    st.subheader("Dataset Overview")
-    st.write(titanic_dataset.describe())  # Shows descriptive statistics of the dataset
+st.markdown('''
+<div class="group-info-box">
+    <div class="group-title">Group Information</div>
+    <div class="group-leader">Leader : Jerry Doriquez</div>
+    <div class="group-member">Gumagay, Dawn Marie D.</div>
+    <div class="group-member">Ursal, Gelu Marie</div>
+    <div class="group-member">Corbete, Areej Charisse</div>
+    <div class="group-member">Paner, Leemar</div>
+</div>
+''', unsafe_allow_html=True)
 
-    # Display a preview of the dataset
-    st.subheader("Dataset Preview")
-    st.dataframe(titanic_dataset.head())  # Shows the first few rows of the dataset
+st.header("Filter the Data")
 
-    # Group Information
-    st.subheader("Group Information")
-    st.write(""" 
-    **Group Name:** AJA  
-    **Leader:** Jerry Doriquez  
-    **Members:**
-    - Gumagay, Dawn Marie D.
-    - Ursal, Gelu Marie
-    - Corbete, Areej Charisse
-    - Paner, Leemar
-    """)
+age_filter = st.slider("Select Age Range:", int(titanic_dataset['Age'].min()), int(titanic_dataset['Age'].max()), (10, 50))
+filtered_data = titanic_dataset[(titanic_dataset['Age'] >= age_filter[0]) & (titanic_dataset['Age'] <= age_filter[1])]
 
-# Data Visualization Page
-elif selected_page == "Data Visualization":
-    # Filter Data Section
-    st.header("Filter the Data")
+pclass_filter = st.multiselect("Select Passenger Class (1st, 2nd, 3rd):", [1, 2, 3], [1, 2, 3])
+filtered_data = filtered_data[filtered_data['Pclass'].isin(pclass_filter)]
 
-    age_filter = st.slider("Select Age Range:", int(titanic_dataset['Age'].min()), int(titanic_dataset['Age'].max()), (10, 50))
-    filtered_data = titanic_dataset[(titanic_dataset['Age'] >= age_filter[0]) & (titanic_dataset['Age'] <= age_filter[1])]
+st.write("Filtered Data")
+st.dataframe(filtered_data)
 
-    pclass_filter = st.multiselect("Select Passenger Class (1st, 2nd, 3rd):", [1, 2, 3], [1, 2, 3])
-    filtered_data = filtered_data[filtered_data['Pclass'].isin(pclass_filter)]
+st.header("Visualizations")
 
-    st.write("Filtered Data")
-    st.dataframe(filtered_data)
+visualization_type = st.selectbox("Select Visualization Type:", 
+                                    ["Survival Rates by Class", "Survival Rates by Gender", 
+                                     "Percentage of Passengers by Class", "Survival Rate Percentage", 
+                                     "Correlation Heatmap", "Age Distribution", "Fare Distribution"])
 
-    # Visualizations Section
-    st.header("Visualizations")
+if visualization_type == "Survival Rates by Class":
+    st.subheader("Survival Rates by Class")
+    class_survival_rate = filtered_data.groupby("Pclass")["Survived"].mean()
+    fig1, ax1 = plt.subplots()
+    sns.barplot(x=class_survival_rate.index, y=class_survival_rate.values, ax=ax1, color='#001f3f')
+    ax1.set_title("Survival Rate by Class", color='#001f3f')
+    ax1.set_ylabel("Survival Rate", color='#001f3f')
+    ax1.set_xlabel("Passenger Class", color='#001f3f')
+    st.pyplot(fig1)
+    st.write("This bar chart shows the survival rate of passengers by class.")
 
-    visualization_type = st.selectbox("Select Visualization Type:", 
-                                        ["Survival Rates by Class", "Survival Rates by Gender", 
-                                         "Percentage of Passengers by Class", "Survival Rate Percentage", 
-                                         "Correlation Heatmap", "Age Distribution", "Fare Distribution"])
+elif visualization_type == "Survival Rates by Gender":
+    st.subheader("Survival Rates by Gender")
+    gender_survival_rate = filtered_data.groupby("Sex")["Survived"].mean()
+    fig2, ax2 = plt.subplots()
+    sns.barplot(x=gender_survival_rate.index, y=gender_survival_rate.values, ax=ax2, color='#001f3f')
+    ax2.set_title("Survival Rate by Gender", color='#001f3f')
+    ax2.set_ylabel("Survival Rate", color='#001f3f')
+    ax2.set_xlabel("Gender", color='#001f3f')
+    st.pyplot(fig2)
+    st.write("This bar chart illustrates the survival rates based on gender.")
 
-    def plot_survival_by_class():
-        plt.figure(figsize=(10, 5))
-        sns.set_theme(style="whitegrid")  # Change to whitegrid theme
-        class_survival_rate = filtered_data.groupby("Pclass")["Survived"].mean()
-        sns.barplot(x=class_survival_rate.index, y=class_survival_rate.values, palette='Blues')
-        plt.title("Survival Rate by Class", fontsize=16, fontweight='bold')
-        plt.ylabel("Survival Rate", fontsize=12)
-        plt.xlabel("Passenger Class", fontsize=12)
-        plt.xticks(rotation=0)
-        st.pyplot(plt)
+elif visualization_type == "Percentage of Passengers by Class":
+    st.subheader("Percentage of Passengers by Class")
+    class_counts = filtered_data['Pclass'].value_counts()
+    fig3 = px.pie(filtered_data, names='Pclass', title="Percentage of Passengers by Class", hole=0.3, 
+                   color_discrete_sequence=['#001f3f', '#FF6F61', '#FF6F61'])
+    st.plotly_chart(fig3)
+    st.write("This pie chart shows the distribution of passengers across different classes.")
 
-    def plot_survival_by_gender():
-        plt.figure(figsize=(10, 5))
-        sns.set_theme(style="whitegrid")
-        gender_survival_rate = filtered_data.groupby("Sex")["Survived"].mean()
-        sns.barplot(x=gender_survival_rate.index, y=gender_survival_rate.values, palette='pastel')
-        plt.title("Survival Rate by Gender", fontsize=16, fontweight='bold')
-        plt.ylabel("Survival Rate", fontsize=12)
-        plt.xlabel("Gender", fontsize=12)
-        plt.xticks(rotation=0)
-        st.pyplot(plt)
+elif visualization_type == "Survival Rate Percentage":
+    st.subheader("Survival Rate Percentage")
+    survival_counts = filtered_data['Survived'].value_counts()
+    fig4 = px.pie(filtered_data, names='Survived', title="Survival Rate Percentage", hole=0.3, 
+                   color_discrete_sequence=['#001f3f', '#FF6F61'])
+    st.plotly_chart(fig4)
+    st.write("This pie chart illustrates the overall survival rate among passengers.")
 
-    def plot_class_distribution():
-        fig = px.pie(filtered_data, names='Pclass', title="Percentage of Passengers by Class", hole=0.3, 
-                     color_discrete_sequence=px.colors.sequential.Blues)
-        fig.update_traces(textinfo='percent+label')
-        fig.update_layout(width=600, height=400, title_font=dict(size=16, family="Arial"))
-        st.plotly_chart(fig)
+elif visualization_type == "Correlation Heatmap":
+    st.subheader("Correlation Heatmap")
+    corr_matrix = filtered_data[['Age', 'Fare', 'SibSp', 'Parch']].corr()
+    fig5, ax5 = plt.subplots()
+    sns.heatmap(corr_matrix, annot=True, cmap="Blues", ax=ax5)
+    ax5.set_title("Correlation Heatmap of Features", color='#001f3f')
+    st.pyplot(fig5)
+    st.write("This heatmap displays the correlation between numerical features in the dataset.")
 
-    def plot_survival_rate():
-        fig = px.pie(filtered_data, names='Survived', title="Survival Rate Percentage", hole=0.3, 
-                     color_discrete_sequence=px.colors.sequential.RdBu)
-        fig.update_traces(textinfo='percent+label')
-        fig.update_layout(width=600, height=400, title_font=dict(size=16, family="Arial"))
-        st.plotly_chart(fig)
+elif visualization_type == "Age Distribution":
+    st.subheader("Age Distribution")
+    fig6, ax6 = plt.subplots()
+    sns.histplot(filtered_data['Age'], bins=20, kde=True, ax=ax6, color='#001f3f')
+    ax6.set_title("Age Distribution", color='#001f3f')
+    ax6.set_xlabel("Age", color='#001f3f')
+    st.pyplot(fig6)
+    st.write("This histogram shows the age distribution of the passengers.")
 
-    def plot_correlation_heatmap():
-        corr_matrix = filtered_data[['Age', 'Fare', 'SibSp', 'Parch']].corr()
-        plt.figure(figsize=(10, 5))
-        sns.set_theme(style="white")
-        sns.heatmap(corr_matrix, annot=True, cmap="Blues", fmt=".2f", linewidths=.5, cbar_kws={"shrink": .8})
-        plt.title("Correlation Heatmap of Features", fontsize=16, fontweight='bold')
-        st.pyplot(plt)
+elif visualization_type == "Fare Distribution":
+    st.subheader("Fare Distribution")
+    fig7, ax7 = plt.subplots()
+    sns.histplot(filtered_data['Fare'], bins=20, kde=True, ax=ax7, color='#001f3f')
+    ax7.set_title("Fare Distribution", color='#001f3f')
+    ax7.set_xlabel("Fare", color='#001f3f')
+    st.pyplot(fig7)
+    st.write("This histogram illustrates the fare distribution among passengers.")
 
-    def plot_age_distribution():
-        plt.figure(figsize=(10, 5))
-        sns.set_theme(style="whitegrid")
-        sns.histplot(filtered_data['Age'], bins=20, kde=True, color='#001f3f', alpha=0.6)
-        plt.title("Age Distribution", fontsize=16, fontweight='bold')
-        plt.xlabel("Age", fontsize=12)
-        plt.ylabel("Frequency", fontsize=12)
-        st.pyplot(plt)
-
-    def plot_fare_distribution():
-        plt.figure(figsize=(10, 5))
-        sns.set_theme(style="whitegrid")
-        sns.histplot(filtered_data['Fare'], bins=20, kde=True, color='#001f3f', alpha=0.6)
-        plt.title("Fare Distribution", fontsize=16, fontweight='bold')
-        plt.xlabel("Fare", fontsize=12)
-        plt.ylabel("Frequency", fontsize=12)
-        st.pyplot(plt)
-
-    # Plot based on user's selection
-    if visualization_type == "Survival Rates by Class":
-        st.subheader("Survival Rates by Class")
-        plot_survival_by_class()
-        st.write("First-class passengers had significantly higher survival rates compared to third-class passengers.")
-
-    elif visualization_type == "Survival Rates by Gender":
-        st.subheader("Survival Rates by Gender")
-        plot_survival_by_gender()
-        st.write("Females had a significantly higher chance of survival than males.")
-
-    elif visualization_type == "Percentage of Passengers by Class":
-        st.subheader("Percentage of Passengers by Class")
-        plot_class_distribution()
-        st.write("The majority of passengers were in third class.")
-
-    elif visualization_type == "Survival Rate Percentage":
-        st.subheader("Survival Rate Percentage")
-        plot_survival_rate()
-        st.write("Overall, a minority of passengers survived.")
-
-    elif visualization_type == "Correlation Heatmap":
-        st.subheader("Correlation Heatmap")
-        plot_correlation_heatmap()
-        st.write("Fare and Age have weak correlations with survival, while family-related variables show a mild correlation.")
-
-    elif visualization_type == "Age Distribution":
-        st.subheader("Age Distribution")
-        plot_age_distribution()
-        st.write("The majority of passengers were aged between 20 and 40.")
-
-    elif visualization_type == "Fare Distribution":
-        st.subheader("Fare Distribution")
-        plot_fare_distribution()
-        st.write("Fares varied significantly among passengers, with a few individuals paying much higher fares.")
-
-# Conclusion Page
-elif selected_page == "Conclusion":
-    st.header("Conclusion")
-    st.write(""" 
-    This exploration of the Titanic dataset revealed key insights regarding the factors influencing survival rates among passengers. 
-    It was found that passenger class, gender, and age played significant roles in determining survival chances. 
-    Higher class passengers and females had notably higher survival rates, highlighting socio-economic factors affecting survival. 
-    Additionally, the data illustrated variations in age and fare among the passengers, contributing to understanding the demographics aboard the Titanic. 
-    The findings emphasize the importance of socio-economic status and gender during disasters, relevant to both historical and modern contexts.
-    """)
+st.header("Conclusion")
+st.write("""
+From the analysis of the Titanic dataset, several factors stood out as having a significant impact on survival:
+- **Class**: Passengers in the first class had a higher survival rate compared to those in the third class.
+- **Gender**: Females were more likely to survive than males.
+- **Age**: Younger passengers had higher survival rates.
+- **Fare**: Passengers who paid higher fares tended to have better survival rates.
+These findings align with the historical accounts of the Titanic tragedy, where women, children, and the wealthy were given priority in lifeboats.
+""")
