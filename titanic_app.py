@@ -52,7 +52,7 @@ st.markdown(
     }
     .group-title {
         font-size: 24px;
-        color: #002147;
+        color: #ffffff;
         font-weight: bold;
         margin-bottom: 10px;
         text-align: center;
